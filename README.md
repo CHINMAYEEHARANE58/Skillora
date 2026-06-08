@@ -41,3 +41,16 @@ mvn spring-boot:run
 ```
 
 AI features are intentionally not implemented yet.
+
+## Authentication APIs
+
+- `POST /api/auth/register` with `fullName`, `email`, `password`
+- `POST /api/auth/login` with `email`, `password`
+- `POST /api/auth/refresh` with `refreshToken`
+- `POST /api/auth/logout` with `refreshToken`
+- `POST /api/auth/password/forgot` with `email`
+- `POST /api/auth/password/reset` with `token`, `newPassword`
+- `GET /api/users/me` requires a bearer access token
+- `GET /api/admin/status` requires `ROLE_ADMIN`
+
+The frontend persists access and refresh tokens in local storage, attaches bearer tokens through Axios interceptors, refreshes expired access tokens, and protects dashboard routes.

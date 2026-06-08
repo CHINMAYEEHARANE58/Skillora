@@ -19,5 +19,6 @@ spring:
 skillora:
   jwt:
     issuer: skillora
-    secret: ${JWT_SECRET:replace-this-development-secret}
+    secret: ${JWT_SECRET:replace-this-development-secret-with-at-least-32-bytes}
     expiration-minutes: 60
+    refresh-expiration-days: 14

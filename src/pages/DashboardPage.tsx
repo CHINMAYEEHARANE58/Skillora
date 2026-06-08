@@ -21,15 +21,19 @@ import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Progress } from "../components/ui/progress";
+import { useAuth } from "../context/AuthContext";
 
 export function DashboardPage() {
+  const { user } = useAuth();
+  const firstName = user?.fullName.split(" ")[0] ?? "there";
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <Badge variant="success">Career readiness active</Badge>
           <h1 className="mt-3 text-3xl font-black text-ink-950 dark:text-white sm:text-4xl">
-            Good morning, Chinmayee
+            Good morning, {firstName}
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-600 dark:text-ink-300">
             Your Skillora workspace is set up for resume focus, interview prep, and target-role tracking.

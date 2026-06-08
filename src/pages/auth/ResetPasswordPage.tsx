@@ -7,12 +7,11 @@ import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { useAuth } from "../../context/AuthContext";
 
-export function RegisterPage() {
-  const { register } = useAuth();
+export function ResetPasswordPage() {
+  const { resetPassword } = useAuth();
   const navigate = useNavigate();
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [token, setToken] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -22,10 +21,10 @@ export function RegisterPage() {
     setIsSubmitting(true);
 
     try {
-      await register({ fullName, email, password });
-      navigate("/dashboard", { replace: true });
+      await resetPassword(token, newPassword);
+      navigate("/login", { replace: true });
     } catch {
-      setError("Could not create account. Try another email or stronger password.");
+      setError("Could not reset password. Check the token and try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -34,55 +33,35 @@ export function RegisterPage() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-2xl">Create your workspace</CardTitle>
-        <CardDescription>Start with a profile, then connect real career workflows later.</CardDescription>
+        <CardTitle className="text-2xl">Set a new password</CardTitle>
+        <CardDescription>Use your reset token to secure the account.</CardDescription>
       </CardHeader>
       <CardContent>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-2">
-            <Label htmlFor="name">Full name</Label>
-            <Input
-              autoComplete="name"
-              id="name"
-              onChange={(event) => setFullName(event.target.value)}
-              placeholder="Chinmayee Harane"
-              required
-              value={fullName}
-            />
+            <Label htmlFor="token">Reset token</Label>
+            <Input id="token" onChange={(event) => setToken(event.target.value)} required value={token} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              autoComplete="email"
-              id="email"
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="you@example.com"
-              required
-              type="email"
-              value={email}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">New password</Label>
             <Input
               autoComplete="new-password"
               id="password"
               minLength={8}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="Create a strong password"
+              onChange={(event) => setNewPassword(event.target.value)}
               required
               type="password"
-              value={password}
+              value={newPassword}
             />
           </div>
           {error ? <p className="rounded-lg bg-coral-500/10 px-3 py-2 text-sm font-semibold text-coral-600">{error}</p> : null}
           <Button className="w-full" disabled={isSubmitting} type="submit">
-            {isSubmitting ? "Creating account..." : "Create account"}
+            {isSubmitting ? "Resetting..." : "Reset password"}
             <ArrowRight aria-hidden="true" className="h-4 w-4" />
           </Button>
         </form>
         <p className="mt-6 text-center text-sm text-ink-500 dark:text-ink-400">
-          Already have an account?{" "}
+          Remembered it?{" "}
           <Link className="font-bold text-teal-700 dark:text-teal-300" to="/login">
             Sign in
           </Link>

@@ -6,9 +6,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../co
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Progress } from "../components/ui/progress";
+import { useAuth } from "../context/AuthContext";
 import { profileSkills } from "../data/app-data";
 
 export function ProfilePage() {
+  const { user } = useAuth();
+  const displayName = user?.fullName ?? "Skillora User";
+  const displayEmail = user?.email ?? "user@example.com";
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -28,16 +33,16 @@ export function ProfilePage() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <Avatar className="h-16 w-16 text-lg" name="Chinmayee Harane" />
+              <Avatar className="h-16 w-16 text-lg" name={displayName} />
               <div>
-                <h2 className="text-xl font-black text-ink-950 dark:text-white">Chinmayee Harane</h2>
+                <h2 className="text-xl font-black text-ink-950 dark:text-white">{displayName}</h2>
                 <p className="mt-1 text-sm text-ink-500 dark:text-ink-400">Frontend Engineer</p>
               </div>
             </div>
             <div className="mt-6 space-y-3 text-sm text-ink-600 dark:text-ink-300">
               <p className="flex items-center gap-3">
                 <Mail aria-hidden="true" className="h-4 w-4" />
-                chinmayee@example.com
+                {displayEmail}
               </p>
               <p className="flex items-center gap-3">
                 <Phone aria-hidden="true" className="h-4 w-4" />
@@ -69,7 +74,7 @@ export function ProfilePage() {
             <form className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="fullName">Full name</Label>
-                <Input id="fullName" defaultValue="Chinmayee Harane" />
+                <Input id="fullName" defaultValue={displayName} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="role">Current role</Label>
@@ -77,7 +82,7 @@ export function ProfilePage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" defaultValue="chinmayee@example.com" />
+                <Input id="email" defaultValue={displayEmail} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="location">Location</Label>

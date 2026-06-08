@@ -1,5 +1,6 @@
 import { Bell, Menu, Moon, Search, Sun } from "lucide-react";
 import type { Theme } from "../../hooks/useTheme";
+import { useAuth } from "../../context/AuthContext";
 import { Avatar } from "../ui/avatar";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -13,6 +14,7 @@ type TopNavbarProps = {
 
 export function TopNavbar({ theme, onMenuClick, onThemeToggle }: TopNavbarProps) {
   const ThemeIcon = theme === "dark" ? Sun : Moon;
+  const { user } = useAuth();
 
   return (
     <header className="sticky top-0 z-30 border-b border-ink-200 bg-white/85 backdrop-blur-xl dark:border-white/10 dark:bg-ink-950/80">
@@ -43,7 +45,7 @@ export function TopNavbar({ theme, onMenuClick, onThemeToggle }: TopNavbarProps)
           >
             <ThemeIcon aria-hidden="true" className="h-5 w-5" />
           </Button>
-          <Avatar className="h-9 w-9" name="Chinmayee Harane" />
+          <Avatar className="h-9 w-9" name={user?.fullName ?? "Skillora User"} />
         </div>
       </div>
     </header>

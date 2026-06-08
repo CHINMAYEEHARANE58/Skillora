@@ -1,6 +1,8 @@
 import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LogOut, Sparkles } from "lucide-react";
 import { sidebarItems } from "../../data/app-data";
+import { useAuth } from "../../context/AuthContext";
 import { cn } from "../../utils/cn";
 import { Button } from "../ui/button";
 
@@ -10,6 +12,14 @@ type SidebarProps = {
 };
 
 export function Sidebar({ open, onClose }: SidebarProps) {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleLogout() {
+    await logout();
+    navigate("/login", { replace: true });
+  }
+
   return (
     <>
       <div
@@ -72,7 +82,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           </Button>
         </div>
 
-        <Button className="mt-4 justify-start" variant="ghost">
+        <Button className="mt-4 justify-start" onClick={handleLogout} variant="ghost">
           <LogOut aria-hidden="true" className="h-4 w-4" />
           Sign out
         </Button>
