@@ -1,0 +1,11 @@
+node_modules
+dist
+.npm-cache
+*.tsbuildinfo
+.DS_Store
+target
+.env
+.env.local
+*.iml
+.idea
+.vscode

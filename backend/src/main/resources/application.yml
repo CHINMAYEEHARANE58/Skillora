@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: skillora-api
+  datasource:
+    url: jdbc:mysql://localhost:3306/skillora?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+skillora:
+  jwt:
+    issuer: skillora
+    secret: ${JWT_SECRET:replace-this-development-secret}
+    expiration-minutes: 60
