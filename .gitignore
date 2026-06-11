@@ -2,6 +2,8 @@ node_modules
 dist
 .npm-cache
 *.tsbuildinfo
+__pycache__
+*.pyc
 .DS_Store
 target
 .env

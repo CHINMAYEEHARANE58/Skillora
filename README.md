@@ -40,7 +40,7 @@ cd backend
 mvn spring-boot:run
 ```
 
-AI features are intentionally not implemented yet.
+The AI Resume Analyzer module is scaffolded with an async production pipeline and a local FastAPI analyzer service.
 
 ## Authentication APIs
 
@@ -54,3 +54,49 @@ AI features are intentionally not implemented yet.
 - `GET /api/admin/status` requires `ROLE_ADMIN`
 
 The frontend persists access and refresh tokens in local storage, attaches bearer tokens through Axios interceptors, refreshes expired access tokens, and protects dashboard routes.
+
+## AI Resume Analyzer
+
+The analyzer flow is asynchronous:
+
+1. React uploads a PDF to `POST /api/resumes/upload`.
+2. Spring stores the PDF in AWS S3.
+3. Spring publishes a Kafka event to `resume-analysis-requested`.
+4. A Kafka consumer downloads the PDF, extracts text with PDFBox, and sends the text to FastAPI.
+5. Results are stored in MySQL and mirrored to Snowflake when enabled.
+
+### Frontend
+
+```bash
+cd /Users/chinmayeedeepakharane/Documents/Skillora
+npm run dev -- --host 127.0.0.1
+```
+
+Open `http://127.0.0.1:5173/resume-analyzer`.
+
+### FastAPI Analyzer
+
+```bash
+cd /Users/chinmayeedeepakharane/Documents/Skillora/ai-service
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --host 127.0.0.1 --port 8000
+```
+
+### Required Backend Infrastructure
+
+- MySQL running at `localhost:3306`
+- Kafka running at `localhost:9092`
+- AWS credentials with access to `AWS_RESUME_BUCKET`
+- Optional Snowflake table named `RESUME_ANALYTICS`
+
+Useful environment variables:
+
+```bash
+export AWS_REGION=us-east-1
+export AWS_RESUME_BUCKET=skillora-resumes
+export KAFKA_BOOTSTRAP_SERVERS=localhost:9092
+export RESUME_ANALYZER_URL=http://localhost:8000/analyze-resume
+export SNOWFLAKE_ENABLED=false
+```

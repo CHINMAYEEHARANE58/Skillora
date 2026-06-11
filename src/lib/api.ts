@@ -18,14 +18,31 @@ api.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
 
+  console.debug("[Skillora API] Request", {
+    method: config.method,
+    url: config.url,
+    authenticated: Boolean(token),
+  });
+
   return config;
 });
 
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
+    if (!error.config) {
+      console.error("[Skillora API] Request failed before config was created", error);
+      return Promise.reject(error);
+    }
+
     const originalRequest = error.config as RetryableRequest;
     const refreshToken = getRefreshToken();
+
+    console.warn("[Skillora API] Response error", {
+      status: error.response?.status,
+      url: originalRequest.url,
+      message: error.message,
+    });
 
     if (
       error.response?.status === 401 &&
@@ -36,12 +53,14 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
+        console.info("[Skillora Auth] Access token expired. Attempting refresh.");
         const response = await api.post<AuthResponse>("/auth/refresh", { refreshToken });
         persistAuthSession(response.data);
         originalRequest.headers = AxiosHeaders.from(originalRequest.headers);
         originalRequest.headers.set("Authorization", `Bearer ${response.data.accessToken}`);
         return api(originalRequest);
       } catch (refreshError) {
+        console.error("[Skillora Auth] Token refresh failed. Redirecting to login.", refreshError);
         clearAuthSession();
         window.location.assign("/login");
         return Promise.reject(refreshError);

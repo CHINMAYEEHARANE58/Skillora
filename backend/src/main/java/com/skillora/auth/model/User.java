@@ -46,6 +46,18 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private boolean enabled = true;
 
+    @Column(length = 1000)
+    private String skills = "Java, Spring Boot, React, TypeScript, SQL";
+
+    @Column(length = 1000)
+    private String education = "B.Tech Computer Science";
+
+    @Column(length = 160)
+    private String targetRole = "Full Stack Engineer";
+
+    @Column(length = 160)
+    private String targetCompany = "Product company";
+
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
 
@@ -82,6 +94,30 @@ public class User implements UserDetails {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public String getSkills() {
+        return skills;
+    }
+
+    public String getEducation() {
+        return education;
+    }
+
+    public String getTargetRole() {
+        return targetRole;
+    }
+
+    public String getTargetCompany() {
+        return targetCompany;
+    }
+
+    public void updateProfile(String fullName, String skills, String education, String targetRole, String targetCompany) {
+        this.fullName = fullName;
+        this.skills = skills;
+        this.education = education;
+        this.targetRole = targetRole;
+        this.targetCompany = targetCompany;
     }
 
     public void setPassword(String password) {

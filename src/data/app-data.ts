@@ -4,6 +4,7 @@ import {
   BookOpenCheck,
   BriefcaseBusiness,
   CalendarCheck,
+  FileScan,
   FileText,
   LayoutDashboard,
   MessageSquareText,
@@ -15,6 +16,7 @@ import {
 
 export const sidebarItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Resume Analyzer", href: "/resume-analyzer", icon: FileScan },
   { label: "Profile", href: "/profile", icon: UserCircle },
   { label: "Settings", href: "/settings", icon: Settings },
 ];

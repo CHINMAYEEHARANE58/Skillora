@@ -1,4 +1,5 @@
-import { ArrowRight, Github } from "lucide-react";
+import axios from "axios";
+import { ArrowRight, ShieldCheck, UserRound } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
@@ -16,20 +17,47 @@ export function LoginPage() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname ?? "/dashboard";
+  const demoAccounts = [
+    {
+      label: "Admin demo",
+      icon: ShieldCheck,
+      email: "admin@skillora.ai",
+      password: "Admin@123",
+    },
+    {
+      label: "Student demo",
+      icon: UserRound,
+      email: "student@skillora.ai",
+      password: "Student@123",
+    },
+  ];
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+
+    if (!email.trim() || !password.trim()) {
+      setError("Email and password are required.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       await login({ email, password });
       navigate(from, { replace: true });
-    } catch {
-      setError("Invalid email or password.");
+    } catch (caughtError) {
+      setError(getLoginErrorMessage(caughtError));
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  function fillDemoCredentials(account: (typeof demoAccounts)[number]) {
+    console.info("[Skillora Auth] Demo credentials selected", { email: account.email });
+    setEmail(account.email);
+    setPassword(account.password);
+    setError("");
   }
 
   return (
@@ -40,6 +68,23 @@ export function LoginPage() {
       </CardHeader>
       <CardContent>
         <form className="space-y-4" onSubmit={handleSubmit}>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {demoAccounts.map((account) => {
+              const Icon = account.icon;
+              return (
+                <Button
+                  className="w-full"
+                  key={account.email}
+                  onClick={() => fillDemoCredentials(account)}
+                  type="button"
+                  variant="secondary"
+                >
+                  <Icon aria-hidden="true" className="h-4 w-4" />
+                  {account.label}
+                </Button>
+              );
+            })}
+          </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -74,10 +119,6 @@ export function LoginPage() {
             {isSubmitting ? "Signing in..." : "Sign in"}
             <ArrowRight aria-hidden="true" className="h-4 w-4" />
           </Button>
-          <Button className="w-full" type="button" variant="secondary">
-            <Github aria-hidden="true" className="h-4 w-4" />
-            Continue with GitHub
-          </Button>
         </form>
         <p className="mt-6 text-center text-sm text-ink-500 dark:text-ink-400">
           New to Skillora?{" "}
@@ -88,4 +129,26 @@ export function LoginPage() {
       </CardContent>
     </Card>
   );
+}
+
+function getLoginErrorMessage(error: unknown) {
+  if (!axios.isAxiosError(error)) {
+    return "Could not sign in. Please try again.";
+  }
+
+  if (error.code === "ERR_NETWORK" || !error.response) {
+    return "Backend is not reachable. Start the Spring Boot server on http://localhost:8080, then try again.";
+  }
+
+  const message = (error.response.data as { message?: string } | undefined)?.message;
+
+  if (message) {
+    return message;
+  }
+
+  if (error.response.status === 401) {
+    return "Invalid email or password.";
+  }
+
+  return "Could not sign in. Please try again.";
 }

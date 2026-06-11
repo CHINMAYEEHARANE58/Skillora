@@ -10,6 +10,7 @@ import { LoginPage } from "./pages/auth/LoginPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterPage } from "./pages/auth/RegisterPage";
 import { ResetPasswordPage } from "./pages/auth/ResetPasswordPage";
+import { ResumeAnalyzerPage } from "./pages/ResumeAnalyzerPage";
 import { SettingsPage } from "./pages/SettingsPage";
 
 export default function App() {
@@ -29,6 +30,7 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout theme={theme} onThemeToggle={toggleTheme} />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/resume-analyzer" element={<ResumeAnalyzerPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
